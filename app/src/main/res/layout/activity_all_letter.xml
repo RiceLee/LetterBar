@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AllLetterActivity">
+
+
+    <!--<ricelee.view.letterbar.LetterBar-->
+    <!--android:id="@+id/bar1"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:visibility="invisible"-->
+    <!--app:layout_constraintTop_toBottomOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:letterSize="16sp"-->
+    <!--tools:ignore="MissingConstraints" />-->
+
+    <!--<ricelee.view.letterbar.LetterBar-->
+    <!--android:id="@+id/bar2"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="40dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:visibility="invisible"-->
+    <!--app:barBackground="@drawable/letter_bg"-->
+    <!--app:layout_constraintLeft_toRightOf="@id/bar1"-->
+    <!--app:layout_constraintTop_toBottomOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:letterColor="#df3030"-->
+    <!--app:letterSize="16sp"-->
+    <!--tools:ignore="MissingConstraints" />-->
+
+    <!--<ricelee.view.letterbar.LetterBar-->
+    <!--android:id="@+id/bar3"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="40dp"-->
+    <!--android:layout_marginTop="20dp"-->
+    <!--android:layout_marginBottom="20dp"-->
+    <!--android:visibility="invisible"-->
+    <!--app:barBackground="@color/colorPrimary"-->
+    <!--app:layout_constraintLeft_toRightOf="@id/bar2"-->
+    <!--app:layout_constraintTop_toBottomOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:letterColor="#313131"-->
+    <!--app:letterHorizontalPadding="10dp"-->
+    <!--app:letterVerticalPadding="6dp"-->
+    <!--tools:ignore="MissingConstraints" />-->
+
+
+    <ricelee.ui.letterbar.LetterBar
+        android:id="@+id/bar4"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        app:barTouchBackground="#13000000"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:letterColor="#313131"
+        app:letterHorizontalPadding="6dp"
+        app:letterShowChecked="true"
+        app:letterSize="16sp"
+        app:letterTouchColor="#df3030"
+        app:letterTouchDrawable="@drawable/drawable_letter_touch"
+        app:letterVerticalPadding="6dp"
+        tools:ignore="MissingConstraints" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_add_first"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="头部添加Drawable"
+        android:textAllCaps="false"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_add_last"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="尾部添加Drawable"
+        android:textAllCaps="false"
+        app:layout_constraintLeft_toRightOf="@id/btn_add_first"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_add_string"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="添加String"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/btn_add_first" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_add_char"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="添加Char"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@id/btn_add_string" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="默认--中心"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_add_string" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_stable_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="固定位置--左上角"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_center" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_stable_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="固定位置--LetterBar左侧"
+        android:textAllCaps="false"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_stable_1" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_stable_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="固定位置--其他位置"
+        android:textAllCaps="false"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_stable_2" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_followY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="跟随Y坐标"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_stable_3" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_center_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="clickEvent"
+        android:text="在每个字母中间"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_followY" />
+
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LetterBar">
+        <attr name="letterDynamicMode" format="boolean" />
+        <attr name="letterSize" format="dimension" />
+        <attr name="letterColor" format="color|reference" />
+        <attr name="letterVerticalPadding" format="dimension" />
+        <attr name="letterHorizontalPadding" format="dimension" />
+        <attr name="barBackground" format="reference|color" />
+
+        <attr name="expandLeftWidth" format="dimension" />
+        <attr name="expandRightWidth" format="dimension" />
+
+        <attr name="letterTouchDrawable" format="color|reference" />
+        <attr name="barTouchBackground" format="color|reference" />
+        <attr name="letterTouchColor" format="color|reference" />
+        <attr name="letterShowChecked" format="boolean" />
+
+    </declare-styleable>
+</resources>
