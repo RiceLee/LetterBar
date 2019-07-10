@@ -208,6 +208,7 @@ public class LetterBar extends View {
                     if (index < letterList.size() - 1) {
                         int compareInt1 = currentCharLetter.compareTo(charLetter);
                         if (compareInt1 < 0) {
+                            int nextIndex = iterator.nextIndex();
                             ILetter nextLetter = iterator.next();
                             if (nextLetter instanceof CharLetter.DefaultCharLetter) {
                                 CharLetter.DefaultCharLetter nextCharLetter = (CharLetter.DefaultCharLetter) nextLetter;
@@ -219,6 +220,15 @@ public class LetterBar extends View {
                                             + "\tcurrentCharLetter:" + currentCharLetter.character + "\tcompareInt2:" + compareInt2
                                             + "\tnextCharLetter:" + nextCharLetter.character);
                                     break;
+                                } else {
+                                    if (nextIndex == letterList.size() - 1) {
+                                        letterList.add(charLetter);
+                                        mCharNumber++;
+                                        Log.e("addCharLetter", "-nextINdex--" + nextIndex + "\tsize:" + letterList.size());
+                                    } else {
+                                        Log.e("addCharLetter", "-continue--");
+                                        continue;
+                                    }
                                 }
                             }
                         } else if (compareInt1 > 0) {
