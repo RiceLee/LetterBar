@@ -44,7 +44,7 @@ public class AllLetterActivity extends AppCompatActivity {
                 letterBar4.addStringLetter("热");
                 break;
             case R.id.btn_add_char:
-                letterBar4.addCharLetter(new CharLetter.DefaultCharLetter('A'));
+                letterBar4.addCharLetter(new CharLetter.ComparableCharLetter('A'));
                 break;
             case R.id.btn_center:
                 letterBar4.setLetterTouchListener(new SingleLetterPopup().setDuration(2000)

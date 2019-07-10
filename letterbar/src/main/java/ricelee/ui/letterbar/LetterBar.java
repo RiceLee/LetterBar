@@ -20,7 +20,6 @@ import android.view.View;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import ricelee.ui.letterbar.utils.Utils;
 
@@ -166,7 +165,7 @@ public class LetterBar extends View {
     private void init() {
         if (!mLetterDynamicMode) {
             for (char c = 'A'; c <= 'Z'; c++) {
-                letterList.add(new CharLetter.DefaultCharLetter(c));
+                letterList.add(new CharLetter.ComparableCharLetter(c));
                 mCharNumber++;
             }
         }
@@ -184,74 +183,56 @@ public class LetterBar extends View {
 
     public <T extends CharLetter> void addCharLetter(List<T> charLetterList) {
         for (CharLetter charLetter : charLetterList) {
-            CharLetter.DefaultCharLetter defaultCharLetter = new CharLetter.DefaultCharLetter(charLetter);
-            addDefaultCharLetter(defaultCharLetter);
+            CharLetter.ComparableCharLetter comparableCharLetter = new CharLetter.ComparableCharLetter(charLetter);
+            addDefaultCharLetter(comparableCharLetter);
         }
         requestLayout();
     }
 
-    private void addDefaultCharLetter(CharLetter.DefaultCharLetter charLetter) {
-        if (!letterList.contains(charLetter)) {
-            if (mCharNumber == 0) {
-                letterList.add(charLetter);
-                Log.e("addCharLetter", "char:" + charLetter.character);
-                mCharNumber++;
-                return;
+    private List<CharLetter.ComparableCharLetter> getCharList() {
+        if (mCharNumber == 0) return null;
+        List<CharLetter.ComparableCharLetter> charLetterList = new ArrayList<>();
+        for (int i = 0; i < letterList.size(); i++) {
+            ILetter iLetter = letterList.get(i);
+            if (iLetter instanceof CharLetter.ComparableCharLetter) {
+                CharLetter.ComparableCharLetter comparableCharLetter = (CharLetter.ComparableCharLetter) iLetter;
+                charLetterList.add(comparableCharLetter);
             }
-            ListIterator<ILetter> iterator = letterList.listIterator();
-            while (iterator.hasNext()) {
-                int index = iterator.nextIndex();
-                ILetter iLetter = iterator.next();
-                if (iLetter instanceof CharLetter.DefaultCharLetter) {
-                    CharLetter.DefaultCharLetter currentCharLetter = (CharLetter.DefaultCharLetter) iLetter;
-                    Log.e("addCharLetter", "---index:" + index + "\tchar:" + currentCharLetter.character + "\tletterList.size():" + letterList.size());
-                    if (index < letterList.size() - 1) {
-                        int compareInt1 = currentCharLetter.compareTo(charLetter);
-                        if (compareInt1 < 0) {
-                            int nextIndex = iterator.nextIndex();
-                            ILetter nextLetter = iterator.next();
-                            if (nextLetter instanceof CharLetter.DefaultCharLetter) {
-                                CharLetter.DefaultCharLetter nextCharLetter = (CharLetter.DefaultCharLetter) nextLetter;
-                                int compareInt2 = nextCharLetter.compareTo(charLetter);
-                                if (compareInt2 > 0) {
-                                    letterList.add(index + 1, charLetter);
-                                    mCharNumber++;
-                                    Log.e("addCharLetter", "---(index+1):" + (index + 1) + "\tcompareInt:" + compareInt1
-                                            + "\tcurrentCharLetter:" + currentCharLetter.character + "\tcompareInt2:" + compareInt2
-                                            + "\tnextCharLetter:" + nextCharLetter.character);
-                                    break;
-                                } else {
-                                    if (nextIndex == letterList.size() - 1) {
-                                        letterList.add(charLetter);
-                                        mCharNumber++;
-                                        Log.e("addCharLetter", "-nextINdex--" + nextIndex + "\tsize:" + letterList.size());
-                                    } else {
-                                        Log.e("addCharLetter", "-continue--");
-                                        continue;
-                                    }
-                                }
-                            }
-                        } else if (compareInt1 > 0) {
-                            letterList.add(index, charLetter);
-//                            letterList.add(i, charLetter);
-                            mCharNumber++;
-                            Log.e("addCharLetter", "index:" + index + "\tcompareInt:" + compareInt1
-                                    + "\tcurrentCharLetter:" + currentCharLetter.character);
+        }
+        return charLetterList;
+    }
+
+    private void addDefaultCharLetter(CharLetter.ComparableCharLetter charLetter) {
+        List<CharLetter.ComparableCharLetter> charLetterList = getCharList();
+        if (charLetterList == null || charLetterList.size() == 0) {
+            letterList.add(charLetter);
+            mCharNumber++;
+            Log.e("addCharLetter", "char:" + charLetter.character + "\tmCharNumber:" + mCharNumber);
+        } else {
+            if (!letterList.contains(charLetter)) {
+                int addIndex = letterList.indexOf(charLetterList.get(0));
+                if (charLetter.character == 'A') {
+                    addIndex = letterList.indexOf(charLetterList.get(0));
+                } else if (charLetter.character == 'Z') {
+                    addIndex = letterList.indexOf(charLetterList.get(charLetterList.size() - 1)) + 1;
+                } else {
+                    for (int ch = charLetter.character - 1; ch >= 'A'; ch--) {
+                        CharLetter.ComparableCharLetter instanceCharLetter = CharLetter.ComparableCharLetter.getInstance((char) ch);
+                        if (charLetterList.contains(instanceCharLetter)) {
+                            addIndex = letterList.indexOf(instanceCharLetter) + 1;
                             break;
                         }
-                    } else {
-                        letterList.add(index + 1, charLetter);
-                        mCharNumber++;
-                        Log.e("addCharLetter", "(index+1):" + (index + 1) + "\t" + currentCharLetter.character);
-                        break;
                     }
                 }
+                letterList.add(addIndex, charLetter);
+                mCharNumber++;
+                Log.e("addCharLetter", "char:" + charLetter.character + "\taddIndex:" + addIndex + "\tmCharNumber:" + mCharNumber);
             }
         }
     }
 
     public <T extends CharLetter> void addCharLetter(T charLetter) {
-        addDefaultCharLetter(new CharLetter.DefaultCharLetter(charLetter));
+        addDefaultCharLetter(new CharLetter.ComparableCharLetter(charLetter));
         requestLayout();
     }
 
@@ -430,9 +411,9 @@ public class LetterBar extends View {
     }
 
     private void check(float y) {
-        int index = (int) ((y - getPaddingTop() - getPaddingBottom()) / (itemHeight + mLetterVerticalPadding));
-        if (index >= 0 && index < letterList.size()) {
-            mTouchIndex = index;
+        int addIndex = (int) ((y - getPaddingTop() - getPaddingBottom()) / (itemHeight + mLetterVerticalPadding));
+        if (addIndex >= 0 && addIndex < letterList.size()) {
+            mTouchIndex = addIndex;
         }
     }
 

@@ -5,12 +5,11 @@ import android.util.Log;
 public interface CharLetter extends ILetter {
     char getCharLetter();
 
-    final class DefaultCharLetter implements CharLetter, Comparable<DefaultCharLetter> {
+
+    final class DefaultCharLetter implements CharLetter {
         char character;
 
         public DefaultCharLetter(char character) {
-            if (!Character.isLetter(character))
-                Log.e(DefaultCharLetter.class.getSimpleName(), "character is must letter");
             this.character = character;
         }
 
@@ -22,13 +21,37 @@ public interface CharLetter extends ILetter {
         public char getCharLetter() {
             return character;
         }
+    }
+
+
+    final class ComparableCharLetter implements CharLetter, Comparable<ComparableCharLetter> {
+        char character;
+
+        public static ComparableCharLetter getInstance(char character) {
+            return new ComparableCharLetter(character);
+        }
+
+        public ComparableCharLetter(char character) {
+            if (!Character.isLetter(character))
+                Log.e(ComparableCharLetter.class.getSimpleName(), "character is must letter");
+            this.character = character;
+        }
+
+        public ComparableCharLetter(CharLetter charLetter) {
+            this(charLetter.getCharLetter());
+        }
+
+        @Override
+        public char getCharLetter() {
+            return character;
+        }
 
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
-            if (obj instanceof DefaultCharLetter) {
-                DefaultCharLetter defaultCharLetter = (DefaultCharLetter) obj;
-                return defaultCharLetter.character == character;
+            if (obj instanceof ComparableCharLetter) {
+                ComparableCharLetter comparableCharLetter = (ComparableCharLetter) obj;
+                return comparableCharLetter.character == character;
             }
             return false;
         }
@@ -39,7 +62,7 @@ public interface CharLetter extends ILetter {
         }
 
         @Override
-        public int compareTo(DefaultCharLetter other) {
+        public int compareTo(ComparableCharLetter other) {
             return Character.compare(this.character, other.character);
         }
     }
