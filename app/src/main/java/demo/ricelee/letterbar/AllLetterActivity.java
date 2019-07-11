@@ -41,10 +41,10 @@ public class AllLetterActivity extends AppCompatActivity {
                 letterBar4.addLastDrawable(R.drawable.icon_search);
                 break;
             case R.id.btn_add_string:
-                letterBar4.addStringLetter("热");
+                letterBar4.addFirstString("热").refresh();
                 break;
             case R.id.btn_add_char:
-                letterBar4.addCharLetter(new CharLetter.ComparableCharLetter('A'));
+//                letterBar4.addAutoCharLetter(new CharLetter.ComparableCharLetter('A'));
                 break;
             case R.id.btn_center:
                 letterBar4.setLetterTouchListener(new SingleLetterPopup().setDuration(2000)

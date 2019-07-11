@@ -30,7 +30,11 @@ public class LetterBar extends View {
     private Rect mRect;
     private int itemHeight, itemWidth;
 
-    private List<ILetter> letterList = new ArrayList<>();
+    private List<ILetter> mLetterList = new ArrayList<>();
+    private List<CharLetter.NoneCompareCharLetter> mNoneCompareCharList;
+    private List<CharLetter.ComparableCharLetter> mCompareCharList;
+
+
     private int mCharNumber = 0;
 
     //  字母的模式 是否动态添加
@@ -80,6 +84,9 @@ public class LetterBar extends View {
     private LetterScrollListener mLetterScrollListener;
     private PopupHandler mPopupHandler;
 
+    interface LetterTouchListener {
+        void setLetterBar(LetterBar letterBar);
+    }
 
     public LetterBar(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
@@ -165,7 +172,7 @@ public class LetterBar extends View {
     private void init() {
         if (!mLetterDynamicMode) {
             for (char c = 'A'; c <= 'Z'; c++) {
-                letterList.add(new CharLetter.ComparableCharLetter(c));
+                mLetterList.add(new CharLetter.DefaultCharLetter(c));
                 mCharNumber++;
             }
         }
@@ -177,89 +184,117 @@ public class LetterBar extends View {
         mPopupHandler = new PopupHandler(this);
     }
 
-    interface LetterTouchListener {
-        void setLetterBar(LetterBar letterBar);
-    }
-
-    public <T extends CharLetter> void addCharLetter(List<T> charLetterList) {
-        for (CharLetter charLetter : charLetterList) {
-            CharLetter.ComparableCharLetter comparableCharLetter = new CharLetter.ComparableCharLetter(charLetter);
-            addDefaultCharLetter(comparableCharLetter);
-        }
+    public void refresh() {
         requestLayout();
     }
 
-    private List<CharLetter.ComparableCharLetter> getCharList() {
-        if (mCharNumber == 0) return null;
-        List<CharLetter.ComparableCharLetter> charLetterList = new ArrayList<>();
-        for (int i = 0; i < letterList.size(); i++) {
-            ILetter iLetter = letterList.get(i);
-            if (iLetter instanceof CharLetter.ComparableCharLetter) {
-                CharLetter.ComparableCharLetter comparableCharLetter = (CharLetter.ComparableCharLetter) iLetter;
-                charLetterList.add(comparableCharLetter);
+    /**
+     * 自动补全LetterBar 添加S
+     */
+    public LetterBar addAutoSpecialLetter(char ch, boolean isTop) {
+        if (!mLetterDynamicMode) {
+            throw new NullPointerException("LetterBar is not dynamicMode,can not use the method.");
+        }
+        if (mNoneCompareCharList == null) mNoneCompareCharList = new ArrayList<>();
+        mNoneCompareCharList.add(new CharLetter.NoneCompareCharLetter(ch, isTop));
+        return this;
+    }
+
+    public <T extends CharLetter> LetterBar addAutoCharLetter(List<T> charLetterList) {
+        for (CharLetter charLetter : charLetterList) {
+            if (mNoneCompareCharList != null) {
+                if (mNoneCompareCharList.contains(charLetter)) {
+
+                }
+            } else {
+                CharLetter.ComparableCharLetter comparableCharLetter = new CharLetter.ComparableCharLetter(charLetter);
+                addDefaultCharLetter(comparableCharLetter);
             }
         }
-        return charLetterList;
+        return this;
+    }
+
+    public <T extends CharLetter> LetterBar addAutoCharLetter(T charLetter) {
+        addDefaultCharLetter(new CharLetter.ComparableCharLetter(charLetter));
+        return this;
+    }
+
+
+    private void addSpecialCharLetter(CharLetter.NoneCompareCharLetter noneCompareCharLetter) {
+        if (mLetterList.contains(noneCompareCharLetter)) return;
+        List<CharLetter.ComparableCharLetter> compareCharLetterList = mCompareCharList;
+        if (compareCharLetterList == null || compareCharLetterList.size() == 0) {
+            if (noneCompareCharLetter.isTop()) {
+
+            } else {
+
+            }
+        } else {
+            if (noneCompareCharLetter.isTop()) {
+
+            } else {
+
+            }
+        }
+//        if (noneCompareCharLetter.isTop()) {
+//
+//        } else {
+//
+//        }
     }
 
     private void addDefaultCharLetter(CharLetter.ComparableCharLetter charLetter) {
-        List<CharLetter.ComparableCharLetter> charLetterList = getCharList();
-        if (charLetterList == null || charLetterList.size() == 0) {
-            letterList.add(charLetter);
+        List<CharLetter.ComparableCharLetter> compareCharLetterList = mCompareCharList;
+        if (compareCharLetterList == null || compareCharLetterList.size() == 0) {
+            mLetterList.add(charLetter);
             mCharNumber++;
-            Log.e("addCharLetter", "char:" + charLetter.character + "\tmCharNumber:" + mCharNumber);
+            mCompareCharList = new ArrayList<>();
+            mCompareCharList.add(charLetter);
+            Log.e("addAutoCharLetter", "char:" + charLetter.getCharLetter() + "\tmCharNumber:" + mCharNumber);
         } else {
-            if (!letterList.contains(charLetter)) {
-                int addIndex = letterList.indexOf(charLetterList.get(0));
-                if (charLetter.character == 'A') {
-                    addIndex = letterList.indexOf(charLetterList.get(0));
-                } else if (charLetter.character == 'Z') {
-                    addIndex = letterList.indexOf(charLetterList.get(charLetterList.size() - 1)) + 1;
+            if (!mLetterList.contains(charLetter)) {
+                int addIndex = mLetterList.indexOf(compareCharLetterList.get(0));
+                if (charLetter.getCharLetter() == 'A') {
+                    addIndex = mLetterList.indexOf(compareCharLetterList.get(0));
+                } else if (charLetter.getCharLetter() == 'Z') {
+                    addIndex = mLetterList.indexOf(compareCharLetterList.get(compareCharLetterList.size() - 1)) + 1;
                 } else {
-                    for (int ch = charLetter.character - 1; ch >= 'A'; ch--) {
+                    for (int ch = charLetter.getCharLetter() - 1; ch >= 'A'; ch--) {
                         CharLetter.ComparableCharLetter instanceCharLetter = CharLetter.ComparableCharLetter.getInstance((char) ch);
-                        if (charLetterList.contains(instanceCharLetter)) {
-                            addIndex = letterList.indexOf(instanceCharLetter) + 1;
+//                        charLetterList.contains((char)ch);
+                        if (compareCharLetterList.contains(instanceCharLetter)) {
+                            addIndex = mLetterList.indexOf(instanceCharLetter) + 1;
                             break;
                         }
                     }
                 }
-                letterList.add(addIndex, charLetter);
+                mLetterList.add(addIndex, charLetter);
+                mCompareCharList.add(charLetter);
                 mCharNumber++;
-                Log.e("addCharLetter", "char:" + charLetter.character + "\taddIndex:" + addIndex + "\tmCharNumber:" + mCharNumber);
+                Log.e("addAutoCharLetter", "char:" + charLetter.getCharLetter() + "\taddIndex:" + addIndex + "\tmCharNumber:" + mCharNumber);
             }
         }
     }
 
-    public <T extends CharLetter> void addCharLetter(T charLetter) {
-        addDefaultCharLetter(new CharLetter.ComparableCharLetter(charLetter));
-        requestLayout();
+
+    public LetterBar addFirstString(String string) {
+        mLetterList.add(0, new StringLetter(string));
+        return this;
     }
 
-    public void addLetter(ILetter... letters) {
-        for (ILetter iLetter : letters) {
-            addLetter(iLetter);
-        }
-        requestLayout();
+    public LetterBar addLastString(String string) {
+        mLetterList.add(new StringLetter(string));
+        return this;
     }
 
-    private void addLetter(ILetter iLetter) {
-        letterList.add(iLetter);
+    public LetterBar addFirstDrawable(@DrawableRes int drawable) {
+        mLetterList.add(0, new DrawableLetter(getResources().getDrawable(drawable)));
+        return this;
     }
 
-    public void addStringLetter(String string) {
-        addLetter(new StringLetter(string));
-        requestLayout();
-    }
-
-    public void addFirstDrawable(@DrawableRes int drawable) {
-        letterList.add(0, new DrawableLetter(getResources().getDrawable(drawable)));
-        requestLayout();
-    }
-
-    public void addLastDrawable(@DrawableRes int drawable) {
-        letterList.add(new DrawableLetter(getResources().getDrawable(drawable)));
-        requestLayout();
+    public LetterBar addLastDrawable(@DrawableRes int drawable) {
+        mLetterList.add(new DrawableLetter(getResources().getDrawable(drawable)));
+        return this;
     }
 
     public void setLetterScrollListener(LetterScrollListener letterScrollListener) {
@@ -298,9 +333,9 @@ public class LetterBar extends View {
                 getPaddingTop(),
                 mWidth - getPaddingRight() - mExpandRightWidth,
                 mLetterVerticalPadding + itemHeight);
-        int size = letterList.size();
+        int size = mLetterList.size();
         for (int i = 0; i < size; i++) {
-            ILetter letterBean = letterList.get(i);
+            ILetter letterBean = mLetterList.get(i);
             baseline = (mRect.bottom + mRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
             mPaint.setColor(mLetterColor);
             if (letterBean instanceof DrawableLetter) {
@@ -357,15 +392,15 @@ public class LetterBar extends View {
             case MotionEvent.ACTION_DOWN:
                 check(yPos);
                 mTouchState = true;
-                if (mTouchIndex >= 0 && mTouchIndex < letterList.size()) {
+                if (mTouchIndex >= 0 && mTouchIndex < mLetterList.size()) {
                     if (mLetterScrollListener != null) {
-                        mLetterScrollListener.onLetterTouch(letterList.get(mTouchIndex));
+                        mLetterScrollListener.onLetterTouch(mLetterList.get(mTouchIndex));
                     }
                     if (mLetterTouchListener != null) {
                         if (mLetterTouchListener instanceof PopupTouchListener) {
                             PopupTouchListener popupTouchListener = (PopupTouchListener) mLetterTouchListener;
-                            popupTouchListener.show(letterList.get(mTouchIndex), (int) yPos);
-                            Log.e(getClass().getSimpleName(), "ACTION_DOWN:" + "\ty:" + yPos + "\tmTouchIndex:" + mTouchIndex + "\tletter:" + letterList.get(mTouchIndex).getClass().getSimpleName());
+                            popupTouchListener.show(mLetterList.get(mTouchIndex), (int) yPos);
+                            Log.e(getClass().getSimpleName(), "ACTION_DOWN:" + "\ty:" + yPos + "\tmTouchIndex:" + mTouchIndex + "\tletter:" + mLetterList.get(mTouchIndex).getClass().getSimpleName());
                             mPopupHandler.removeMessages(0);
                         }
                     }
@@ -374,14 +409,14 @@ public class LetterBar extends View {
             case MotionEvent.ACTION_MOVE:
                 check(yPos);
                 mTouchState = true;
-                if (mTouchIndex >= 0 && mTouchIndex < letterList.size()) {
+                if (mTouchIndex >= 0 && mTouchIndex < mLetterList.size()) {
                     if (mLetterScrollListener != null) {
-                        mLetterScrollListener.onLetterTouch(letterList.get(mTouchIndex));
+                        mLetterScrollListener.onLetterTouch(mLetterList.get(mTouchIndex));
                     }
                     if (mLetterTouchListener instanceof PopupTouchListener) {
                         PopupTouchListener popupTouchListener = (PopupTouchListener) mLetterTouchListener;
-                        popupTouchListener.update(letterList.get(mTouchIndex), -1, (int) yPos);
-                        Log.e(getClass().getSimpleName(), "update:" + "\ty:" + yPos + "\tmTouchIndex:" + mTouchIndex + "\tletter:" + letterList.get(mTouchIndex).getClass().getSimpleName());
+                        popupTouchListener.update(mLetterList.get(mTouchIndex), -1, (int) yPos);
+                        Log.e(getClass().getSimpleName(), "update:" + "\ty:" + yPos + "\tmTouchIndex:" + mTouchIndex + "\tletter:" + mLetterList.get(mTouchIndex).getClass().getSimpleName());
                     }
                 }
                 break;
@@ -412,7 +447,7 @@ public class LetterBar extends View {
 
     private void check(float y) {
         int addIndex = (int) ((y - getPaddingTop() - getPaddingBottom()) / (itemHeight + mLetterVerticalPadding));
-        if (addIndex >= 0 && addIndex < letterList.size()) {
+        if (addIndex >= 0 && addIndex < mLetterList.size()) {
             mTouchIndex = addIndex;
         }
     }
@@ -465,11 +500,11 @@ public class LetterBar extends View {
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         if (heightMode == MeasureSpec.EXACTLY) {
             mHeight = heightSize;
-            if (letterList.size() > 0) {
-                itemHeight = (mHeight - getPaddingTop() - getPaddingBottom() - letterList.size() * mLetterVerticalPadding) / letterList.size();
+            if (mLetterList.size() > 0) {
+                itemHeight = (mHeight - getPaddingTop() - getPaddingBottom() - mLetterList.size() * mLetterVerticalPadding) / mLetterList.size();
             }
         } else if (heightMode == MeasureSpec.AT_MOST) {
-            mHeight = letterList.size() * itemHeight + mLetterVerticalPadding * letterList.size() + getPaddingTop() + getPaddingBottom();
+            mHeight = mLetterList.size() * itemHeight + mLetterVerticalPadding * mLetterList.size() + getPaddingTop() + getPaddingBottom();
             Log.e("mLetterDynamicMode", "mHeight:" + mHeight + "\titemHeight:" + itemHeight + "\tmWidth:" + mWidth + "\titemWidth:" + itemWidth);
         }
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);

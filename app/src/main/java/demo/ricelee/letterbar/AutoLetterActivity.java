@@ -36,7 +36,7 @@ public class AutoLetterActivity extends AppCompatActivity {
         myAdapter = new MyAdapter(recyclerBeans);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(myAdapter);
-        letterBar.addCharLetter(recyclerBeans);
+        letterBar.addAutoCharLetter(recyclerBeans);
     }
 
     public void clickEvent(View view) {
@@ -52,7 +52,7 @@ public class AutoLetterActivity extends AppCompatActivity {
         RecyclerBean recyclerBean = transferData(name);
         myAdapter.addData(recyclerBean);
         addTv.setText(String.format("生成的姓名%s,%s", name, recyclerBean.getCharLetter()));
-        letterBar.addCharLetter(recyclerBean);
+        letterBar.addAutoCharLetter(recyclerBean);
     }
 
     private RecyclerBean transferData(String name) {
