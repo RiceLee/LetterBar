@@ -36,6 +36,8 @@ public class AutoLetterActivity extends AppCompatActivity {
         myAdapter = new MyAdapter(recyclerBeans);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(myAdapter);
+        letterBar.addAutoSpecialLetter('#', 200)
+                .addAutoSpecialLetter('$', 10);
         letterBar.addAutoCharLetter(recyclerBeans);
     }
 
@@ -83,7 +85,7 @@ public class AutoLetterActivity extends AppCompatActivity {
     private static String[] otherSurnames = {"$", "#", "*"};
     private static String[] generateSurnames = {"赵", "钱", "孙", "李", "周", "吴", "郑", "王", "明", "方", "许"};
 
-    private static String[] onlySurnames = {"董", "孙",""};
+    private static String[] onlySurnames = {"董", "孙", ""};
 
     public String getName(String[] Surname) {
         Random random = new Random();

@@ -1,5 +1,7 @@
 package ricelee.ui.letterbar;
 
+import android.support.annotation.NonNull;
+
 public interface CharLetter extends ILetter {
     char getCharLetter();
 
@@ -22,6 +24,9 @@ public interface CharLetter extends ILetter {
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
+            if (obj instanceof Character) {
+                return character == (Character) obj;
+            }
             if (obj instanceof DefaultCharLetter) {
                 DefaultCharLetter defaultCharLetter = (DefaultCharLetter) obj;
                 return defaultCharLetter.character == character;
@@ -30,21 +35,34 @@ public interface CharLetter extends ILetter {
         }
     }
 
-    final class NoneCompareCharLetter extends DefaultCharLetter {
+    final class SpecialCharLetter extends DefaultCharLetter implements Comparable<SpecialCharLetter> {
+        private int compareInt;
 
-        private boolean isTop;
-
-        public NoneCompareCharLetter(char character, boolean isTop) {
+        public SpecialCharLetter(char character, int compareInt) {
             super(character);
-            this.isTop = isTop;
+            this.compareInt = compareInt;
         }
 
-        public boolean isTop() {
-            return isTop;
+        public int getCompareInt() {
+            return compareInt;
         }
 
-        public void setTop(boolean top) {
-            isTop = top;
+        public void setCompareInt(int compareInt) {
+            this.compareInt = compareInt;
+        }
+
+        @Override
+        public int hashCode() {
+            return compareInt;
+        }
+
+        public int compareChar(char ch) {
+            return compareInt - ch;
+        }
+
+        @Override
+        public int compareTo(@NonNull SpecialCharLetter o) {
+            return compareInt - o.compareInt;
         }
     }
 
@@ -66,7 +84,6 @@ public interface CharLetter extends ILetter {
         public int compareTo(ComparableCharLetter other) {
             return Character.compare(getCharLetter(), other.getCharLetter());
         }
-
 
         @Override
         public int hashCode() {

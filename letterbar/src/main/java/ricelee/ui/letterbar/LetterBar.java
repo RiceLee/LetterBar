@@ -19,6 +19,7 @@ import android.view.View;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ricelee.ui.letterbar.utils.Utils;
@@ -31,9 +32,13 @@ public class LetterBar extends View {
     private int itemHeight, itemWidth;
 
     private List<ILetter> mLetterList = new ArrayList<>();
-    private List<CharLetter.NoneCompareCharLetter> mNoneCompareCharList;
+    private List<CharLetter.SpecialCharLetter> mSpecialCharList;
     private List<CharLetter.ComparableCharLetter> mCompareCharList;
 
+    private static final char CHAR_A = 'A';
+    private static final char CHAR_Z = 'Z';
+
+    private int addedSpecicalNumber = 0;
 
     private int mCharNumber = 0;
 
@@ -171,7 +176,7 @@ public class LetterBar extends View {
 
     private void init() {
         if (!mLetterDynamicMode) {
-            for (char c = 'A'; c <= 'Z'; c++) {
+            for (char c = CHAR_A; c <= CHAR_Z; c++) {
                 mLetterList.add(new CharLetter.DefaultCharLetter(c));
                 mCharNumber++;
             }
@@ -189,91 +194,103 @@ public class LetterBar extends View {
     }
 
     /**
-     * 自动补全LetterBar 添加S
+     * 自动补全LetterBar添加 SpecialLetter
      */
-    public LetterBar addAutoSpecialLetter(char ch, boolean isTop) {
+    public LetterBar addAutoSpecialLetter(char ch, int compareInt) {
         if (!mLetterDynamicMode) {
-            throw new NullPointerException("LetterBar is not dynamicMode,can not use the method.");
+            throw new IllegalStateException("LetterBar is not dynamicMode, can't use the method.");
         }
-        if (mNoneCompareCharList == null) mNoneCompareCharList = new ArrayList<>();
-        mNoneCompareCharList.add(new CharLetter.NoneCompareCharLetter(ch, isTop));
+        if (compareInt >= CHAR_A && compareInt <= CHAR_Z) {
+            throw new RuntimeException("compareInt can't be within range A-Z.");
+        }
+        if (mSpecialCharList == null) mSpecialCharList = new ArrayList<>();
+        mSpecialCharList.add(new CharLetter.SpecialCharLetter(ch, compareInt));
         return this;
     }
 
-    public <T extends CharLetter> LetterBar addAutoCharLetter(List<T> charLetterList) {
+    public <T extends CharLetter> void addAutoCharLetter(List<T> charLetterList) {
+        if (!mLetterDynamicMode) {
+            throw new IllegalStateException("LetterBar is not dynamicMode, can't use the method.");
+        }
         for (CharLetter charLetter : charLetterList) {
-            if (mNoneCompareCharList != null) {
-                if (mNoneCompareCharList.contains(charLetter)) {
+            if (mSpecialCharList != null && charLetter instanceof CharLetter.SpecialCharLetter) {
+                CharLetter.SpecialCharLetter specialCharLetter = (CharLetter.SpecialCharLetter) charLetter;
+                addSpecialLetter(specialCharLetter);
+            } else {
+                addCompareCharLetter(new CharLetter.ComparableCharLetter(charLetter));
+            }
+        }
+        refresh();
+    }
 
+    public <T extends CharLetter> void addAutoCharLetter(T charLetter) {
+        if (!mLetterDynamicMode) {
+            throw new IllegalStateException("LetterBar is not dynamicMode, can't use the method.");
+        }
+        if (mSpecialCharList != null && !Character.isUpperCase(charLetter.getCharLetter())) {
+            for (CharLetter.SpecialCharLetter specialCharLetter : mSpecialCharList) {
+                if (specialCharLetter.equals(charLetter.getCharLetter())) {
+                    addSpecialLetter(specialCharLetter);
+                    break;
                 }
-            } else {
-                CharLetter.ComparableCharLetter comparableCharLetter = new CharLetter.ComparableCharLetter(charLetter);
-                addDefaultCharLetter(comparableCharLetter);
-            }
-        }
-        return this;
-    }
-
-    public <T extends CharLetter> LetterBar addAutoCharLetter(T charLetter) {
-        addDefaultCharLetter(new CharLetter.ComparableCharLetter(charLetter));
-        return this;
-    }
-
-
-    private void addSpecialCharLetter(CharLetter.NoneCompareCharLetter noneCompareCharLetter) {
-        if (mLetterList.contains(noneCompareCharLetter)) return;
-        List<CharLetter.ComparableCharLetter> compareCharLetterList = mCompareCharList;
-        if (compareCharLetterList == null || compareCharLetterList.size() == 0) {
-            if (noneCompareCharLetter.isTop()) {
-
-            } else {
-
             }
         } else {
-            if (noneCompareCharLetter.isTop()) {
-
-            } else {
-
-            }
+            addCompareCharLetter(new CharLetter.ComparableCharLetter(charLetter));
         }
-//        if (noneCompareCharLetter.isTop()) {
-//
-//        } else {
-//
-//        }
+        refresh();
     }
 
-    private void addDefaultCharLetter(CharLetter.ComparableCharLetter charLetter) {
-        List<CharLetter.ComparableCharLetter> compareCharLetterList = mCompareCharList;
-        if (compareCharLetterList == null || compareCharLetterList.size() == 0) {
-            mLetterList.add(charLetter);
-            mCharNumber++;
-            mCompareCharList = new ArrayList<>();
-            mCompareCharList.add(charLetter);
-            Log.e("addAutoCharLetter", "char:" + charLetter.getCharLetter() + "\tmCharNumber:" + mCharNumber);
+    private void addSpecialLetter(CharLetter.SpecialCharLetter specialCharLetter) {
+//        if (mLetterList.contains(specialCharLetter)) return;
+//        if (mSpecialCharList == null || mSpecialCharList.size() == 0) return;
+        if (addedSpecicalNumber == 0) {
+            mLetterList.add(specialCharLetter);
+            addedSpecicalNumber++;
         } else {
-            if (!mLetterList.contains(charLetter)) {
-                int addIndex = mLetterList.indexOf(compareCharLetterList.get(0));
-                if (charLetter.getCharLetter() == 'A') {
-                    addIndex = mLetterList.indexOf(compareCharLetterList.get(0));
-                } else if (charLetter.getCharLetter() == 'Z') {
-                    addIndex = mLetterList.indexOf(compareCharLetterList.get(compareCharLetterList.size() - 1)) + 1;
-                } else {
-                    for (int ch = charLetter.getCharLetter() - 1; ch >= 'A'; ch--) {
-                        CharLetter.ComparableCharLetter instanceCharLetter = CharLetter.ComparableCharLetter.getInstance((char) ch);
-//                        charLetterList.contains((char)ch);
-                        if (compareCharLetterList.contains(instanceCharLetter)) {
-                            addIndex = mLetterList.indexOf(instanceCharLetter) + 1;
-                            break;
-                        }
+            for (int i = 0; i < mLetterList.size(); i++) {
+                ILetter iLetter = mLetterList.get(i);
+                if (iLetter instanceof CharLetter.SpecialCharLetter) {
+                    CharLetter.SpecialCharLetter mLetter = (CharLetter.SpecialCharLetter) iLetter;
+                    if (specialCharLetter.compareTo(mLetter) < 0) {
+                        mLetterList.add(i, specialCharLetter);
+                        addedSpecicalNumber++;
+                        break;
                     }
                 }
-                mLetterList.add(addIndex, charLetter);
-                mCompareCharList.add(charLetter);
-                mCharNumber++;
-                Log.e("addAutoCharLetter", "char:" + charLetter.getCharLetter() + "\taddIndex:" + addIndex + "\tmCharNumber:" + mCharNumber);
             }
         }
+    }
+
+    private void addCompareCharLetter(CharLetter.ComparableCharLetter comparableCharLetter) {
+        if (mCompareCharList == null || mCompareCharList.size() == 0) {
+            mLetterList.add(comparableCharLetter);
+            mCharNumber++;
+            mCompareCharList = new ArrayList<>();
+            mCompareCharList.add(comparableCharLetter);
+            Log.e("addAutoCharLetter", "char:" + comparableCharLetter.getCharLetter() + "\tmCharNumber:" + mCharNumber);
+        } else {
+            if (mLetterList.contains(comparableCharLetter)) return;
+            int addIndex = mLetterList.indexOf(mCompareCharList.get(0));
+            if (comparableCharLetter.getCharLetter() == CHAR_A) {
+                addIndex = mLetterList.indexOf(mCompareCharList.get(0));
+            } else if (comparableCharLetter.getCharLetter() == CHAR_Z) {
+                addIndex = mLetterList.indexOf(mCompareCharList.get(mCompareCharList.size() - 1)) + 1;
+            } else {
+                for (int ch = comparableCharLetter.getCharLetter() - 1; ch >= 'A'; ch--) {
+                    CharLetter.ComparableCharLetter instanceCharLetter = CharLetter.ComparableCharLetter.getInstance((char) ch);
+                    if (mCompareCharList.contains(instanceCharLetter)) {
+                        addIndex = mLetterList.indexOf(instanceCharLetter) + 1;
+                        break;
+                    }
+                }
+            }
+            mLetterList.add(addIndex, comparableCharLetter);
+            mCompareCharList.add(comparableCharLetter);
+            Collections.sort(mCompareCharList);
+            mCharNumber++;
+            Log.e("addAutoCharLetter", "char:" + comparableCharLetter.getCharLetter() + "\taddIndex:" + addIndex + "\tmCharNumber:" + mCharNumber);
+        }
+        comparableCharLetter = null;
     }
 
 
@@ -293,7 +310,11 @@ public class LetterBar extends View {
     }
 
     public LetterBar addLastDrawable(@DrawableRes int drawable) {
-        mLetterList.add(new DrawableLetter(getResources().getDrawable(drawable)));
+        if (mLetterDynamicMode) {
+
+        } else {
+            mLetterList.add(new DrawableLetter(getResources().getDrawable(drawable)));
+        }
         return this;
     }
 
