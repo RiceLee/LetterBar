@@ -38,10 +38,6 @@ public class LetterBar extends View {
     private static final char CHAR_A = 'A';
     private static final char CHAR_Z = 'Z';
 
-    private int addedSpecicalNumber = 0;
-
-    private int mCharNumber = 0;
-
     //  字母的模式 是否动态添加
     private boolean mLetterDynamicMode;
     //字母大小
@@ -178,7 +174,6 @@ public class LetterBar extends View {
         if (!mLetterDynamicMode) {
             for (char c = CHAR_A; c <= CHAR_Z; c++) {
                 mLetterList.add(new CharLetter.DefaultCharLetter(c));
-                mCharNumber++;
             }
         }
         mRect = new Rect();
@@ -217,7 +212,7 @@ public class LetterBar extends View {
                 CharLetter.SpecialCharLetter specialCharLetter = (CharLetter.SpecialCharLetter) charLetter;
                 addSpecialLetter(specialCharLetter);
             } else {
-                addCompareCharLetter(new CharLetter.ComparableCharLetter(charLetter));
+                addCompareCharLetter(charLetter);
             }
         }
         refresh();
@@ -235,25 +230,32 @@ public class LetterBar extends View {
                 }
             }
         } else {
-            addCompareCharLetter(new CharLetter.ComparableCharLetter(charLetter));
+            addCompareCharLetter(charLetter);
         }
         refresh();
     }
 
     private void addSpecialLetter(CharLetter.SpecialCharLetter specialCharLetter) {
-//        if (mLetterList.contains(specialCharLetter)) return;
-//        if (mSpecialCharList == null || mSpecialCharList.size() == 0) return;
-        if (addedSpecicalNumber == 0) {
-            mLetterList.add(specialCharLetter);
-            addedSpecicalNumber++;
-        } else {
+        if (mLetterList.contains(specialCharLetter)) return;
+        if (specialCharLetter.compare(CHAR_Z) > 0) {
+            for (int i = mLetterList.size() - 1; i >= 0; i--) {
+                ILetter iLetter = mLetterList.get(i);
+                if (iLetter instanceof CharLetter) {
+                    CharLetter charLetter = (CharLetter) iLetter;
+                    if (specialCharLetter.compare(charLetter.getCharLetter()) > 0) {
+                        mLetterList.add(specialCharLetter);
+                        break;
+                    }
+                }
+            }
+        }
+        if (specialCharLetter.compare(CHAR_A) < 0) {
             for (int i = 0; i < mLetterList.size(); i++) {
                 ILetter iLetter = mLetterList.get(i);
-                if (iLetter instanceof CharLetter.SpecialCharLetter) {
-                    CharLetter.SpecialCharLetter mLetter = (CharLetter.SpecialCharLetter) iLetter;
-                    if (specialCharLetter.compareTo(mLetter) < 0) {
+                if (iLetter instanceof CharLetter) {
+                    CharLetter charLetter = (CharLetter) iLetter;
+                    if (specialCharLetter.compareTo(charLetter) < 0) {
                         mLetterList.add(i, specialCharLetter);
-                        addedSpecicalNumber++;
                         break;
                     }
                 }
@@ -261,13 +263,12 @@ public class LetterBar extends View {
         }
     }
 
-    private void addCompareCharLetter(CharLetter.ComparableCharLetter comparableCharLetter) {
+    private void addCompareCharLetter(CharLetter charLetter) {
+        CharLetter.ComparableCharLetter comparableCharLetter = new CharLetter.ComparableCharLetter(charLetter);
         if (mCompareCharList == null || mCompareCharList.size() == 0) {
             mLetterList.add(comparableCharLetter);
-            mCharNumber++;
             mCompareCharList = new ArrayList<>();
             mCompareCharList.add(comparableCharLetter);
-            Log.e("addAutoCharLetter", "char:" + comparableCharLetter.getCharLetter() + "\tmCharNumber:" + mCharNumber);
         } else {
             if (mLetterList.contains(comparableCharLetter)) return;
             int addIndex = mLetterList.indexOf(mCompareCharList.get(0));
@@ -287,10 +288,7 @@ public class LetterBar extends View {
             mLetterList.add(addIndex, comparableCharLetter);
             mCompareCharList.add(comparableCharLetter);
             Collections.sort(mCompareCharList);
-            mCharNumber++;
-            Log.e("addAutoCharLetter", "char:" + comparableCharLetter.getCharLetter() + "\taddIndex:" + addIndex + "\tmCharNumber:" + mCharNumber);
         }
-        comparableCharLetter = null;
     }
 
 

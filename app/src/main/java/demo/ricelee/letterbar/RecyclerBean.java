@@ -29,13 +29,6 @@ public class RecyclerBean implements CharLetter, Comparable<RecyclerBean> {
 
     @Override
     public char getCharLetter() {
-//        if (Pinyin.isChinese(memberInfo.name.charAt(0))) {
-//
-//        } else {
-//            String s = Pinyin.toPinyin(memberInfo.name.charAt(0));
-//            Log.e(getClass().getSimpleName(), "toPinYin:" + s + "\tchar:" + s.charAt(0));
-//            return s.charAt(0);
-//        }
         String s = Pinyin.toPinyin(memberInfo.name.charAt(0));
         Log.e(getClass().getSimpleName(), "toPinYin:" + s + "\tchar:" + s.charAt(0));
         return s.charAt(0);

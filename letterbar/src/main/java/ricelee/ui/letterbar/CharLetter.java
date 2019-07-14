@@ -1,7 +1,5 @@
 package ricelee.ui.letterbar;
 
-import android.support.annotation.NonNull;
-
 public interface CharLetter extends ILetter {
     char getCharLetter();
 
@@ -35,7 +33,7 @@ public interface CharLetter extends ILetter {
         }
     }
 
-    final class SpecialCharLetter extends DefaultCharLetter implements Comparable<SpecialCharLetter> {
+    final class SpecialCharLetter extends DefaultCharLetter implements Comparable<CharLetter> {
         private int compareInt;
 
         public SpecialCharLetter(char character, int compareInt) {
@@ -56,13 +54,13 @@ public interface CharLetter extends ILetter {
             return compareInt;
         }
 
-        public int compareChar(char ch) {
+        public int compare(char ch) {
             return compareInt - ch;
         }
 
         @Override
-        public int compareTo(@NonNull SpecialCharLetter o) {
-            return compareInt - o.compareInt;
+        public int compareTo(CharLetter o) {
+            return compareInt - o.getCharLetter();
         }
     }
 
