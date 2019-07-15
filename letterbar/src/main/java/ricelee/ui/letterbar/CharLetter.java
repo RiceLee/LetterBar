@@ -3,8 +3,10 @@ package ricelee.ui.letterbar;
 public interface CharLetter extends ILetter {
     char getCharLetter();
 
+
     class DefaultCharLetter implements CharLetter {
         private char character;
+        private boolean letterTouchShow;
 
         public DefaultCharLetter(char character) {
             this.character = character;
@@ -17,6 +19,15 @@ public interface CharLetter extends ILetter {
         @Override
         public char getCharLetter() {
             return character;
+        }
+
+        public void setLetterTouchShow(boolean letterTouchShow) {
+            this.letterTouchShow = letterTouchShow;
+        }
+
+        @Override
+        public boolean letterTouchShow() {
+            return letterTouchShow;
         }
 
         @Override
@@ -41,10 +52,6 @@ public interface CharLetter extends ILetter {
             this.compareInt = compareInt;
         }
 
-        public int getCompareInt() {
-            return compareInt;
-        }
-
         public void setCompareInt(int compareInt) {
             this.compareInt = compareInt;
         }
@@ -63,7 +70,6 @@ public interface CharLetter extends ILetter {
             return compareInt - o.getCharLetter();
         }
     }
-
 
     final class ComparableCharLetter extends DefaultCharLetter implements Comparable<ComparableCharLetter> {
         public static ComparableCharLetter getInstance(char character) {

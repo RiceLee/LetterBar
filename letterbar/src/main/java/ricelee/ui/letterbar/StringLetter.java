@@ -1,8 +1,9 @@
 package ricelee.ui.letterbar;
 
-public class StringLetter implements  ILetter {
+public class StringLetter implements ILetter {
 
     private String letter;
+    private boolean letterTouchShow;
 
     public StringLetter(String letter) {
         this.letter = letter;
@@ -16,10 +17,20 @@ public class StringLetter implements  ILetter {
         this.letter = letter;
     }
 
+    public void setLetterTouchShow(boolean letterTouchShow) {
+        this.letterTouchShow = letterTouchShow;
+    }
+
+    @Override
+    public boolean letterTouchShow() {
+        return letterTouchShow;
+    }
+
     @Override
     public String toString() {
         return "StringLetter{" +
                 "letter='" + letter + '\'' +
                 '}';
     }
+
 }

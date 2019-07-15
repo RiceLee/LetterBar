@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="LetterBar">
         <attr name="letterDynamicMode" format="boolean" />
+        <attr name="toastDynamicMode" format="boolean" />
         <attr name="letterSize" format="dimension" />
         <attr name="letterColor" format="color|reference" />
         <attr name="letterVerticalPadding" format="dimension" />

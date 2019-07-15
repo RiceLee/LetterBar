@@ -6,15 +6,26 @@ import android.text.Spanned;
 import android.text.style.ImageSpan;
 
 public class DrawableLetter implements ILetter {
+
     private Drawable drawable;
     private SpannableString drawableSpan;
     private Drawable mutateDrawable;
+    private boolean letterTouchShow;
 
     public DrawableLetter(Drawable drawable) {
         this.drawable = drawable;
         drawableSpan = new SpannableString("W");
         mutateDrawable = drawable.mutate().getConstantState().newDrawable();
         drawableSpan.setSpan(new ImageSpan(mutateDrawable, ImageSpan.ALIGN_BOTTOM), 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+    }
+
+    public void setLetterTouchShow(boolean letterTouchShow) {
+        this.letterTouchShow = letterTouchShow;
+    }
+
+    @Override
+    public boolean letterTouchShow() {
+        return letterTouchShow;
     }
 
     public Drawable getDrawable() {
