@@ -32,23 +32,43 @@ public class SingeTextPopup implements PopupTouchListener {
         this.letterPopup = letterPopup;
     }
 
-
     @Override
     public void update(ILetter letter, int x, int y) {
+        if (!letter.isLetterTouchShow()) return;
+        initPopupWindow();
         setContent(letter, textView);
         PopupBehavior popupBehavior = letterPopup.getPopupBehavior();
-        switch (popupBehavior.getBehavior()) {
-            case POPUP_BEHAVIOR_FOLLOW_Y:
-                popupWindow.update(popupBehavior.getX(), calculateFollowY(y), popupWindow.getWidth(), popupWindow.getHeight());
-                break;
-            case POPUP_BEHAVIOR_CENTER_ITEM:
-                popupWindow.update(popupBehavior.getX(), calculateCenterItem(), popupWindow.getWidth(), popupWindow.getHeight());
-                break;
+        if (popupWindow.isShowing()) {
+            switch (popupBehavior.getBehavior()) {
+                case POPUP_BEHAVIOR_FOLLOW_Y:
+                    popupWindow.update(popupBehavior.getX(), calculateFollowY(y), popupWindow.getWidth(), popupWindow.getHeight());
+                    break;
+                case POPUP_BEHAVIOR_CENTER_ITEM:
+                    popupWindow.update(popupBehavior.getX(), calculateCenterItem(), popupWindow.getWidth(), popupWindow.getHeight());
+                    break;
+            }
+        } else {
+            switch (popupBehavior.getBehavior()) {
+                case POPUP_BEHAVIOR_CENTER:
+                    popupWindow.showAtLocation(letterBar.getRootView(), Gravity.CENTER, 0, 0);
+                    break;
+                case POPUP_BEHAVIOR_STABLE:
+                    popupWindow.showAtLocation(popupBehavior.getRootView(), popupBehavior.getGravity(), popupBehavior.getX(), popupBehavior.getY());
+                    break;
+                case POPUP_BEHAVIOR_FOLLOW_Y:
+                    popupWindow.showAtLocation(letterBar.getRootView(), Gravity.NO_GRAVITY, popupBehavior.getX(), calculateFollowY(y));
+                    break;
+                case POPUP_BEHAVIOR_CENTER_ITEM:
+                    popupWindow.showAtLocation(letterBar.getRootView(), Gravity.NO_GRAVITY, popupBehavior.getX(), calculateCenterItem());
+                    break;
+            }
         }
+
     }
 
     @Override
     public void show(ILetter letter, int y) {
+        if (!letter.isLetterTouchShow()) return;
         initPopupWindow();
 
         setContent(letter, textView);

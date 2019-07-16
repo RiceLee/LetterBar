@@ -2,15 +2,15 @@
 <resources>
     <declare-styleable name="LetterBar">
         <attr name="letterDynamicMode" format="boolean" />
-        <attr name="toastDynamicMode" format="boolean" />
         <attr name="letterSize" format="dimension" />
         <attr name="letterColor" format="color|reference" />
         <attr name="letterVerticalPadding" format="dimension" />
         <attr name="letterHorizontalPadding" format="dimension" />
         <attr name="barBackground" format="reference|color" />
 
-        <attr name="expandLeftWidth" format="dimension" />
-        <attr name="expandRightWidth" format="dimension" />
+        <!--<attr name="expandLeftWidth" format="dimension" />-->
+        <!--<attr name="expandRightWidth" format="dimension" />-->
+        <attr name="letterTouchShow" format="boolean" />
 
         <attr name="letterTouchDrawable" format="color|reference" />
         <attr name="barTouchBackground" format="color|reference" />

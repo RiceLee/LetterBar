@@ -21,13 +21,8 @@ public class ViewBackgroundBuilder {
     private int fillStyle = STYLE_FILL;
     private int shape = GradientDrawable.RECTANGLE;
 
-
     public ViewBackgroundBuilder() {
     }
-//
-//    public ViewBackgroundBuilder(int fillStyle) {
-//        this.fillStyle = fillStyle;
-//    }
 
     public ViewBackgroundBuilder setTopLeftRadius(float topLeftRadius) {
         this.topLeftRadius = topLeftRadius;

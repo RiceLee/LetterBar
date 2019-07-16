@@ -1,9 +1,10 @@
 package ricelee.ui.letterbar.utils;
 
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.widget.TextView;
 
-public class TextViewBuilder extends ViewBackgroundBuilder {
+public class TextViewBuilder {
 
     private int gravity = Gravity.CENTER;
     private int leftPadding;
@@ -12,6 +13,7 @@ public class TextViewBuilder extends ViewBackgroundBuilder {
     private int bottomPadding;
     private float textSize;
     private int textColor;
+    private Drawable backgroundDrawable;
 
     public TextViewBuilder() {
     }
@@ -38,7 +40,6 @@ public class TextViewBuilder extends ViewBackgroundBuilder {
     public TextViewBuilder setTopPadding(int topPadding) {
         this.topPadding = topPadding;
         return this;
-
     }
 
     public TextViewBuilder setRightPadding(int rightPadding) {
@@ -61,70 +62,8 @@ public class TextViewBuilder extends ViewBackgroundBuilder {
         return this;
     }
 
-    @Override
-    public TextViewBuilder setTopLeftRadius(float topLeftRadius) {
-        super.setTopLeftRadius(topLeftRadius);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setTopRightRadius(float topRightRadius) {
-        super.setTopRightRadius(topRightRadius);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setBottomLeftRadius(float bottomLeftRadius) {
-        super.setBottomLeftRadius(bottomLeftRadius);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setBottomRightRadius(float bottomRightRadius) {
-        super.setBottomRightRadius(bottomRightRadius);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setRadius(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float
-            bottomRightRadius) {
-        super.setRadius(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setRadius(float radius) {
-        super.setRadius(radius);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setSolidColor(int solidColor) {
-        super.setSolidColor(solidColor);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setStrokeColor(int strokeColor) {
-        super.setStrokeColor(strokeColor);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setStrokeWidth(int strokeWidth) {
-        super.setStrokeWidth(strokeWidth);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setFillStyle(int fillStyle) {
-        super.setFillStyle(fillStyle);
-        return this;
-    }
-
-    @Override
-    public TextViewBuilder setShape(int shape) {
-        super.setShape(shape);
+    public TextViewBuilder setBackgroundDrawable(Drawable backgroundDrawable) {
+        this.backgroundDrawable = backgroundDrawable;
         return this;
     }
 
@@ -133,8 +72,8 @@ public class TextViewBuilder extends ViewBackgroundBuilder {
         textView.setTextColor(textColor);
         textView.setPadding(leftPadding, topPadding, rightPadding, bottomPadding);
         textView.setGravity(gravity);
-//        textView.setBackground(buildDrawable());
-        ViewBackgroundProvider.setViewBackground(textView, this);
+        textView.setBackground(backgroundDrawable);
+//        ViewBackgroundProvider.setViewBackground(textView, this);
         return textView;
     }
 

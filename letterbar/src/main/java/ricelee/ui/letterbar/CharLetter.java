@@ -3,10 +3,18 @@ package ricelee.ui.letterbar;
 public interface CharLetter extends ILetter {
     char getCharLetter();
 
+    @Override
+    default boolean isLetterTouchShow() {
+        return false;
+    }
+
+    @Override
+    default void setLetterTouchShow(boolean letterTouchShow) {
+    }
 
     class DefaultCharLetter implements CharLetter {
         private char character;
-        private boolean letterTouchShow;
+        private boolean letterTouchShow = true;
 
         public DefaultCharLetter(char character) {
             this.character = character;
@@ -21,13 +29,13 @@ public interface CharLetter extends ILetter {
             return character;
         }
 
-        public void setLetterTouchShow(boolean letterTouchShow) {
-            this.letterTouchShow = letterTouchShow;
+        @Override
+        public boolean isLetterTouchShow() {
+            return letterTouchShow;
         }
 
-        @Override
-        public boolean letterTouchShow() {
-            return letterTouchShow;
+        public void setLetterTouchShow(boolean letterTouchShow) {
+            this.letterTouchShow = letterTouchShow;
         }
 
         @Override

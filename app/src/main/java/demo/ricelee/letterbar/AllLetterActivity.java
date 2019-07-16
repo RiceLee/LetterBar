@@ -8,12 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 
-import ricelee.ui.letterbar.CharLetter;
 import ricelee.ui.letterbar.LetterBar;
 import ricelee.ui.letterbar.PopupBehavior;
 import ricelee.ui.letterbar.SingleLetterPopup;
 import ricelee.ui.letterbar.utils.TextViewBuilder;
 import ricelee.ui.letterbar.utils.Utils;
+import ricelee.ui.letterbar.utils.ViewBackgroundBuilder;
 
 public class AllLetterActivity extends AppCompatActivity {
     LetterBar letterBar4;
@@ -48,10 +48,10 @@ public class AllLetterActivity extends AppCompatActivity {
                 break;
             case R.id.btn_center:
                 letterBar4.setLetterTouchListener(new SingleLetterPopup().setDuration(2000)
-                        .setTextViewBuilder(new TextViewBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
-                                .setShape(GradientDrawable.RECTANGLE)
-                                .setRadius(Utils.dp2px(60f))
-                                .setSolidColor(Color.YELLOW)
+                        .setTextViewBuilder(new TextViewBuilder()
+                                .setBackgroundDrawable(new ViewBackgroundBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
+                                        .setShape(GradientDrawable.RECTANGLE)
+                                        .setSolidColor(Color.YELLOW).buildDrawable())
                                 .setPadding(dp_10, dp_10, dp_10, dp_10)
                                 .setTextSize(16f).setTextColor(Color.RED))
                         .setPopupBehavior(PopupBehavior.createCenterBehavior())
@@ -59,61 +59,58 @@ public class AllLetterActivity extends AppCompatActivity {
                 break;
             case R.id.btn_stable_1:
                 letterBar4.setLetterTouchListener(
-                        new SingleLetterPopup()
-                                .setTextViewBuilder(new TextViewBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
+                        new SingleLetterPopup().setTextViewBuilder(new TextViewBuilder()
+                                .setBackgroundDrawable(new ViewBackgroundBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
                                         .setShape(GradientDrawable.RECTANGLE)
-                                        .setRadius(Utils.dp2px(60f))
-                                        .setSolidColor(Color.YELLOW)
-                                        .setPadding(dp_10, dp_10, dp_10, dp_10)
-                                        .setTextSize(Utils.sp2px(16f)).setTextColor(Color.RED))
+                                        .setSolidColor(Color.YELLOW).buildDrawable())
+                                .setPadding(dp_10, dp_10, dp_10, dp_10)
+                                .setTextSize(16f).setTextColor(Color.RED))
                                 .setPopupBehavior(PopupBehavior.createStableBehavior(layout, Gravity.START | Gravity.TOP, 0, 0))
                                 .createPopup());
 
                 break;
             case R.id.btn_stable_2:
                 letterBar4.setLetterTouchListener(
-                        new SingleLetterPopup()
-                                .setTextViewBuilder(new TextViewBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
+                        new SingleLetterPopup().setTextViewBuilder(new TextViewBuilder()
+                                .setBackgroundDrawable(new ViewBackgroundBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
                                         .setShape(GradientDrawable.RECTANGLE)
-                                        .setRadius(Utils.dp2px(60f))
-                                        .setSolidColor(Color.YELLOW)
-                                        .setPadding(dp_10, dp_10, dp_10, dp_10)
-                                        .setTextSize(Utils.sp2px(16f)).setTextColor(Color.RED))
+                                        .setSolidColor(Color.YELLOW).buildDrawable())
+                                .setPadding(dp_10, dp_10, dp_10, dp_10)
+                                .setTextSize(16f).setTextColor(Color.RED))
                                 .setPopupBehavior(PopupBehavior.createStableBehavior(letterBar4, Gravity.NO_GRAVITY, (int) (viewLocation[0] - Utils.dp2px(100)), viewLocation[1]))
                                 .createPopup());
                 break;
             case R.id.btn_stable_3:
                 letterBar4.setLetterTouchListener(
                         new SingleLetterPopup()
-                                .setTextViewBuilder(new TextViewBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
+                                .setTextViewBuilder(new TextViewBuilder().setBackgroundDrawable(new ViewBackgroundBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
                                         .setShape(GradientDrawable.RECTANGLE)
-                                        .setRadius(Utils.dp2px(60f))
-                                        .setSolidColor(Color.YELLOW)
+                                        .setSolidColor(Color.YELLOW).buildDrawable())
                                         .setPadding(dp_10, dp_10, dp_10, dp_10)
-                                        .setTextSize(Utils.sp2px(16f)).setTextColor(Color.RED))
+                                        .setTextSize(16f).setTextColor(Color.RED))
                                 .setPopupBehavior(PopupBehavior.createStableBehavior(layout, Gravity.BOTTOM | Gravity.LEFT, 0, (int) Utils.dp2px(100)))
                                 .createPopup());
                 break;
             case R.id.btn_followY:
                 letterBar4.setLetterTouchListener(
-                        new SingleLetterPopup().setTextViewBuilder(new TextViewBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
-                                .setShape(GradientDrawable.RECTANGLE)
-                                .setRadius(Utils.dp2px(60f))
-                                .setSolidColor(Color.YELLOW)
-                                .setPadding(dp_10, dp_10, dp_10, dp_10)
-                                .setTextSize(Utils.sp2px(16f)).setTextColor(Color.RED))
-                                .setPopupBehavior(PopupBehavior.createFollowYBehavior((int) (viewLocation[0] - Utils.dp2px(100))))
 
+                        new SingleLetterPopup().setTextViewBuilder(new TextViewBuilder()
+                                .setBackgroundDrawable(new ViewBackgroundBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
+                                        .setShape(GradientDrawable.RECTANGLE)
+                                        .setSolidColor(Color.YELLOW).buildDrawable())
+                                .setPadding(dp_10, dp_10, dp_10, dp_10)
+                                .setTextSize(16f).setTextColor(Color.RED))
+                                .setPopupBehavior(PopupBehavior.createFollowYBehavior((int) (viewLocation[0] - Utils.dp2px(100))))
                                 .createPopup());
                 break;
             case R.id.btn_center_item:
                 letterBar4.setLetterTouchListener(
-                        new SingleLetterPopup().setTextViewBuilder(new TextViewBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
-                                .setShape(GradientDrawable.RECTANGLE)
-                                .setRadius(Utils.dp2px(60f))
-                                .setSolidColor(Color.YELLOW)
+                        new SingleLetterPopup().setTextViewBuilder(new TextViewBuilder()
+                                .setBackgroundDrawable(new ViewBackgroundBuilder().setRadius(dp_10, dp_10, dp_10, dp_10)
+                                        .setShape(GradientDrawable.RECTANGLE)
+                                        .setSolidColor(Color.YELLOW).buildDrawable())
                                 .setPadding(dp_10, dp_10, dp_10, dp_10)
-                                .setTextSize(Utils.sp2px(16f)).setTextColor(Color.RED))
+                                .setTextSize(16f).setTextColor(Color.RED))
                                 .setPopupBehavior(PopupBehavior.createCenterItemBehavior((int) (viewLocation[0] - Utils.dp2px(100))))
                                 .createPopup());
                 break;

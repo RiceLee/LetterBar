@@ -16,11 +16,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_all_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="全字母模式2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_all" />
+
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="自动补全字母模式"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_all" />
+        app:layout_constraintTop_toBottomOf="@id/btn_all_2" />
+
 </android.support.constraint.ConstraintLayout>

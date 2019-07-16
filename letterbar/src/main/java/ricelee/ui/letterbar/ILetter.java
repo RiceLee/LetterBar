@@ -1,5 +1,8 @@
 package ricelee.ui.letterbar;
 
 public interface ILetter {
-   boolean letterTouchShow();
+    boolean isLetterTouchShow();
+
+    void setLetterTouchShow(boolean letterTouchShow);
+
 }

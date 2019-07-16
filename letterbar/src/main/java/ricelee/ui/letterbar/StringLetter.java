@@ -3,7 +3,7 @@ package ricelee.ui.letterbar;
 public class StringLetter implements ILetter {
 
     private String letter;
-    private boolean letterTouchShow;
+    private boolean letterTouchShow = true;
 
     public StringLetter(String letter) {
         this.letter = letter;
@@ -21,8 +21,7 @@ public class StringLetter implements ILetter {
         this.letterTouchShow = letterTouchShow;
     }
 
-    @Override
-    public boolean letterTouchShow() {
+    public boolean isLetterTouchShow() {
         return letterTouchShow;
     }
 

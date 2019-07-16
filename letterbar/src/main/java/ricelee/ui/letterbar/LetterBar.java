@@ -40,6 +40,8 @@ public class LetterBar extends View {
 
     //  字母的模式 是否动态添加
     private boolean mLetterDynamicMode;
+    //触摸时 是否显示Letter(全部)
+    private boolean mCharLetterTouchShow;
     //字母大小
 //    private int mLetterSize;
     //两个字母之间的竖直间距
@@ -50,10 +52,10 @@ public class LetterBar extends View {
     private int mLetterColor;
     //背景
     private Drawable mBarBackground;
-    //左侧扩展宽度
-    private int mExpandLeftWidth;
-    //右侧扩展宽度
-    private int mExpandRightWidth;
+//    //左侧扩展宽度
+//    private int mExpandLeftWidth;
+//    //右侧扩展宽度
+//    private int mExpandRightWidth;
 
     //    //触摸模式
 //    private int mLetterTouchMode;
@@ -111,14 +113,15 @@ public class LetterBar extends View {
         int letterVerticalPadding = 0;
         int letterHorizontalPadding = (int) Utils.dp2px(4f);
         Drawable barBackground = null;
-        int expandLeftWidth = 0;
-        int expandRightWidth = 0;
+//        int expandLeftWidth = 0;
+//        int expandRightWidth = 0;
         Drawable barTouchBackground = null;
         int n = typedArray.getIndexCount();
         int letterTouchColor = letterColor;
         boolean letterShowChecked = false;
         Drawable letterTouchDrawable = null;
         boolean letterDynamicMode = false;
+        boolean charLetterTouchShow = true;
         for (int i = 0; i < n; i++) {
             int attr = typedArray.getIndex(i);
             if (attr == R.styleable.LetterBar_barBackground) {
@@ -131,11 +134,13 @@ public class LetterBar extends View {
                 letterVerticalPadding = typedArray.getDimensionPixelSize(attr, letterVerticalPadding);
             } else if (attr == R.styleable.LetterBar_letterHorizontalPadding) {
                 letterHorizontalPadding = typedArray.getDimensionPixelSize(attr, letterHorizontalPadding);
-            } else if (attr == R.styleable.LetterBar_expandLeftWidth) {
-                expandLeftWidth = typedArray.getDimensionPixelSize(attr, expandLeftWidth);
-            } else if (attr == R.styleable.LetterBar_expandRightWidth) {
-                expandRightWidth = typedArray.getDimensionPixelSize(attr, expandRightWidth);
-            } else if (attr == R.styleable.LetterBar_barTouchBackground) {
+            }
+//            else if (attr == R.styleable.LetterBar_expandLeftWidth) {
+//                expandLeftWidth = typedArray.getDimensionPixelSize(attr, expandLeftWidth);
+//            } else if (attr == R.styleable.LetterBar_expandRightWidth) {
+//                expandRightWidth = typedArray.getDimensionPixelSize(attr, expandRightWidth);
+//            }
+            else if (attr == R.styleable.LetterBar_barTouchBackground) {
                 barTouchBackground = typedArray.getDrawable(attr);
             } else if (attr == R.styleable.LetterBar_letterTouchColor) {
                 letterTouchColor = typedArray.getColor(attr, letterTouchColor);
@@ -145,6 +150,8 @@ public class LetterBar extends View {
                 letterTouchDrawable = typedArray.getDrawable(attr);
             } else if (attr == R.styleable.LetterBar_letterDynamicMode) {
                 letterDynamicMode = typedArray.getBoolean(attr, letterDynamicMode);
+            } else if (attr == R.styleable.LetterBar_letterTouchShow) {
+                charLetterTouchShow = typedArray.getBoolean(attr, charLetterTouchShow);
             }
         }
         typedArray.recycle();
@@ -154,13 +161,14 @@ public class LetterBar extends View {
         mBarBackground = barBackground;
         mLetterVerticalPadding = letterVerticalPadding;
         mLetterHorizontalPadding = letterHorizontalPadding;
-        mExpandLeftWidth = expandLeftWidth;
-        mExpandRightWidth = expandRightWidth;
+//        mExpandLeftWidth = expandLeftWidth;
+//        mExpandRightWidth = expandRightWidth;
         mBarTouchBackground = barTouchBackground;
         mLetterTouchColor = letterTouchColor;
         mLetterShowChecked = letterShowChecked;
         mLetterTouchDrawable = letterTouchDrawable;
         mLetterDynamicMode = letterDynamicMode;
+        mCharLetterTouchShow = charLetterTouchShow;
     }
 
     private void initTextPaint() {
@@ -177,15 +185,65 @@ public class LetterBar extends View {
             }
         }
         mRect = new Rect();
-        mPaint.getTextBounds("M", 0, 1, mRect);
-        itemHeight = (int) (mRect.height() + Utils.dp2px(2f));
-        itemWidth = mRect.width() + 2 * mLetterHorizontalPadding + getPaddingLeft() + getPaddingRight();
+        mPaint.getTextBounds("W", 0, 1, mRect);
+        itemWidth = mRect.width() + 2 * mLetterHorizontalPadding;
+        mPaint.getTextBounds("Q", 0, 1, mRect);
+        itemHeight = mRect.height() + mLetterVerticalPadding;
         mTouchRect = new Rect();
         mPopupHandler = new PopupHandler(this);
+        if (mLetterList != null && mLetterList.size() > 0) {
+            for (ILetter iLetter : mLetterList) {
+                if (iLetter instanceof CharLetter) {
+                    iLetter.setLetterTouchShow(mCharLetterTouchShow);
+                }
+            }
+        }
     }
 
     public void refresh() {
         requestLayout();
+    }
+
+    public <T extends CharLetter> void attachCharLetter(List<T> charLetterList) {
+        if (mLetterDynamicMode) {
+            addAutoCharLetter(charLetterList);
+        } else {
+            attachDefaultCharLetter(charLetterList);
+        }
+    }
+
+    public <T extends CharLetter> void attachCharLetter(T t) {
+        if (mLetterDynamicMode) {
+            addAutoCharLetter(t);
+        } else {
+            attachDefaultCharLetter(t);
+        }
+    }
+
+    private <T extends CharLetter> void attachDefaultCharLetter(List<T> charLetterList) {
+        for (T t : charLetterList) {
+            for (ILetter iLetter : mLetterList) {
+                if (iLetter instanceof CharLetter.DefaultCharLetter) {
+                    CharLetter.DefaultCharLetter charLetter = (CharLetter.DefaultCharLetter) iLetter;
+                    if (charLetter.equals(t.getCharLetter())) {
+                        charLetter.setLetterTouchShow(true);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private <T extends CharLetter> void attachDefaultCharLetter(T t) {
+        for (ILetter iLetter : mLetterList) {
+            if (iLetter instanceof CharLetter.DefaultCharLetter) {
+                CharLetter.DefaultCharLetter charLetter = (CharLetter.DefaultCharLetter) iLetter;
+                if (charLetter.equals(t)) {
+                    charLetter.setLetterTouchShow(true);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -203,7 +261,7 @@ public class LetterBar extends View {
         return this;
     }
 
-    public <T extends CharLetter> void addAutoCharLetter(List<T> charLetterList) {
+    private <T extends CharLetter> void addAutoCharLetter(List<T> charLetterList) {
         if (!mLetterDynamicMode) {
             throw new IllegalStateException("LetterBar is not dynamicMode, can't use the method.");
         }
@@ -218,7 +276,7 @@ public class LetterBar extends View {
         refresh();
     }
 
-    public <T extends CharLetter> void addAutoCharLetter(T charLetter) {
+    private <T extends CharLetter> void addAutoCharLetter(T charLetter) {
         if (!mLetterDynamicMode) {
             throw new IllegalStateException("LetterBar is not dynamicMode, can't use the method.");
         }
@@ -291,6 +349,33 @@ public class LetterBar extends View {
         }
     }
 
+    public <T extends ILetter> T getLetter(int position) {
+        return (T) mLetterList.get(position);
+    }
+
+    public void setNoneShowLetter(char... chars) {
+        if (mLetterDynamicMode)
+            throw new IllegalStateException("LetterBar is dynamicMode, can't use the method.");
+        for (char ch : chars) {
+            for (ILetter iLetter : mLetterList) {
+                if (iLetter instanceof CharLetter) {
+                    CharLetter charLetter = (CharLetter) iLetter;
+                    if (charLetter.getCharLetter() == ch) {
+                        charLetter.setLetterTouchShow(false);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public void setNoneShowLetter(int... positions) {
+        if (mLetterDynamicMode)
+            throw new IllegalStateException("LetterBar is dynamicMode, can't use the method.");
+        for (int pos : positions) {
+            mLetterList.get(pos).setLetterTouchShow(false);
+        }
+    }
 
     public LetterBar addFirstString(String string) {
         mLetterList.add(0, new StringLetter(string));
@@ -302,18 +387,22 @@ public class LetterBar extends View {
         return this;
     }
 
+    public LetterBar addFirstDrawable(DrawableLetter drawableLetter) {
+        mLetterList.add(0, drawableLetter);
+        return this;
+    }
+
     public LetterBar addFirstDrawable(@DrawableRes int drawable) {
-        mLetterList.add(0, new DrawableLetter(getResources().getDrawable(drawable)));
+        return addFirstDrawable(new DrawableLetter(getResources().getDrawable(drawable)));
+    }
+
+    public LetterBar addLastDrawable(DrawableLetter drawableLetter) {
+        mLetterList.add(drawableLetter);
         return this;
     }
 
     public LetterBar addLastDrawable(@DrawableRes int drawable) {
-        if (mLetterDynamicMode) {
-
-        } else {
-            mLetterList.add(new DrawableLetter(getResources().getDrawable(drawable)));
-        }
-        return this;
+        return addLastDrawable(new DrawableLetter(getResources().getDrawable(drawable)));
     }
 
     public void setLetterScrollListener(LetterScrollListener letterScrollListener) {
@@ -334,11 +423,11 @@ public class LetterBar extends View {
     //绘制slideBar背景
     private void drawBarBackground(Canvas canvas) {
         if (mBarBackground != null) {
-            mBarBackground.setBounds(mExpandLeftWidth, 0, mWidth - mExpandRightWidth, mHeight);
+            mBarBackground.setBounds(0, 0, mWidth, mHeight);
             mBarBackground.draw(canvas);
         }
         if (mBarTouchBackground != null && mTouchState) {
-            mBarTouchBackground.setBounds(mExpandLeftWidth, 0, mWidth - mExpandRightWidth, mHeight);
+            mBarTouchBackground.setBounds(0, 0, mWidth, mHeight);
             mBarTouchBackground.draw(canvas);
         }
 
@@ -348,10 +437,7 @@ public class LetterBar extends View {
         mPaint.setColor(mLetterColor);
         Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
         float baseline;
-        mRect.set(getPaddingLeft() + mExpandLeftWidth,
-                getPaddingTop(),
-                mWidth - getPaddingRight() - mExpandRightWidth,
-                mLetterVerticalPadding + itemHeight);
+        mRect.set(0, 0, mWidth, itemHeight);
         int size = mLetterList.size();
         for (int i = 0; i < size; i++) {
             ILetter letterBean = mLetterList.get(i);
@@ -379,7 +465,6 @@ public class LetterBar extends View {
                     }
                     mPaint.setColor(mLetterTouchColor);
                     canvas.drawText(String.valueOf(charLetter.getCharLetter()), 0, 1, mRect.centerX(), baseline, mPaint);
-
                 } else {
                     canvas.drawText(String.valueOf(charLetter.getCharLetter()), 0, 1, mRect.centerX(), baseline, mPaint);
                 }
@@ -399,6 +484,7 @@ public class LetterBar extends View {
                             mRect.centerX(), baseline, mPaint);
                 }
             }
+
             mRect.offset(0, mRect.height());
         }
     }
@@ -413,13 +499,13 @@ public class LetterBar extends View {
                 mTouchState = true;
                 if (mTouchIndex >= 0 && mTouchIndex < mLetterList.size()) {
                     if (mLetterScrollListener != null) {
-                        mLetterScrollListener.onLetterTouch(mLetterList.get(mTouchIndex));
+                        mLetterScrollListener.onLetterTouch(mLetterList.get(mTouchIndex), mTouchIndex);
                     }
                     if (mLetterTouchListener != null) {
                         if (mLetterTouchListener instanceof PopupTouchListener) {
                             PopupTouchListener popupTouchListener = (PopupTouchListener) mLetterTouchListener;
                             popupTouchListener.show(mLetterList.get(mTouchIndex), (int) yPos);
-                            Log.e(getClass().getSimpleName(), "ACTION_DOWN:" + "\ty:" + yPos + "\tmTouchIndex:" + mTouchIndex + "\tletter:" + mLetterList.get(mTouchIndex).getClass().getSimpleName());
+//                            Log.e(getClass().getSimpleName(), "ACTION_DOWN:" + "\ty:" + yPos + "\tmTouchIndex:" + mTouchIndex + "\tletter:" + mLetterList.get(mTouchIndex).getClass().getSimpleName());
                             mPopupHandler.removeMessages(0);
                         }
                     }
@@ -430,12 +516,12 @@ public class LetterBar extends View {
                 mTouchState = true;
                 if (mTouchIndex >= 0 && mTouchIndex < mLetterList.size()) {
                     if (mLetterScrollListener != null) {
-                        mLetterScrollListener.onLetterTouch(mLetterList.get(mTouchIndex));
+                        mLetterScrollListener.onLetterTouch(mLetterList.get(mTouchIndex), mTouchIndex);
                     }
                     if (mLetterTouchListener instanceof PopupTouchListener) {
                         PopupTouchListener popupTouchListener = (PopupTouchListener) mLetterTouchListener;
                         popupTouchListener.update(mLetterList.get(mTouchIndex), -1, (int) yPos);
-                        Log.e(getClass().getSimpleName(), "update:" + "\ty:" + yPos + "\tmTouchIndex:" + mTouchIndex + "\tletter:" + mLetterList.get(mTouchIndex).getClass().getSimpleName());
+//                        Log.e(getClass().getSimpleName(), "update:" + "\ty:" + yPos + "\tmTouchIndex:" + mTouchIndex + "\tletter:" + mLetterList.get(mTouchIndex).getClass().getSimpleName());
                     }
                 }
                 break;
@@ -465,18 +551,18 @@ public class LetterBar extends View {
     }
 
     private void check(float y) {
-        int addIndex = (int) ((y - getPaddingTop() - getPaddingBottom()) / (itemHeight + mLetterVerticalPadding));
+        int addIndex = (int) (y / itemHeight);
         if (addIndex >= 0 && addIndex < mLetterList.size()) {
             mTouchIndex = addIndex;
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        Log.e(TAG, "onSizeChanged:" + "\tw:" + w + "\th:" + h + "\toldw:" + oldw + "\toldh:" + oldh);
-
-    }
+//    @Override
+//    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+//        super.onSizeChanged(w, h, oldw, oldh);
+//        Log.e(TAG, "onSizeChanged:" + "\tw:" + w + "\th:" + h + "\toldw:" + oldw + "\toldh:" + oldh);
+//
+//    }
 
 //    @Override
 //    protected void onDetachedFromWindow() {
@@ -520,21 +606,25 @@ public class LetterBar extends View {
         if (heightMode == MeasureSpec.EXACTLY) {
             mHeight = heightSize;
             if (mLetterList.size() > 0) {
-                itemHeight = (mHeight - getPaddingTop() - getPaddingBottom() - mLetterList.size() * mLetterVerticalPadding) / mLetterList.size();
+//                itemHeight = (mHeight - mLetterList.size() * mLetterVerticalPadding) / mLetterList.size();
+                mHeight -= mHeight % mLetterList.size();
+                itemHeight = mHeight / mLetterList.size();
             }
         } else if (heightMode == MeasureSpec.AT_MOST) {
-            mHeight = mLetterList.size() * itemHeight + mLetterVerticalPadding * mLetterList.size() + getPaddingTop() + getPaddingBottom();
-            Log.e("mLetterDynamicMode", "mHeight:" + mHeight + "\titemHeight:" + itemHeight + "\tmWidth:" + mWidth + "\titemWidth:" + itemWidth);
+            mHeight = mLetterList.size() * itemHeight;
+            Log.e(TAG, "onMeasure" + "\tmHeight:" + mHeight + "\titemHeight:" + itemHeight + "\tmWidth:" + mWidth + "\titemWidth:" + itemWidth);
         }
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         if (widthMode == MeasureSpec.EXACTLY) {
             mWidth = widthSize;
-            itemWidth = mWidth - getPaddingLeft() - getPaddingRight() - 2 * mLetterHorizontalPadding - mExpandLeftWidth - mExpandRightWidth;
+            itemWidth = mWidth;
         } else if (widthMode == MeasureSpec.AT_MOST) {
-            mWidth = itemWidth + getPaddingLeft() + getPaddingRight() + mExpandLeftWidth + mExpandRightWidth;
+            mWidth = itemWidth;
         }
-        Log.e("onMeasure", "heightMode:" + mHeight + "\titemHeight:" + itemHeight + "\tmWidth:" + mWidth + "\titemWidth:" + itemWidth);
+        Log.e(TAG, "onMeasure" + "\titem*size:" + itemHeight * mLetterList.size());
+        Log.e(TAG, "onMeasure" + "\tmHeight:" + mHeight + "\titemHeight:" + itemHeight
+                + "\tmWidth:" + mWidth + "\titemWidth:" + itemWidth);
 
         setMeasuredDimension(mWidth, mHeight);
     }
