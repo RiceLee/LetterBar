@@ -1,20 +1,17 @@
 package ricelee.ui.letterbar;
 
-import android.support.annotation.AnimatorRes;
-import android.view.View;
-
 import ricelee.ui.letterbar.utils.TextViewBuilder;
 
 public class SingleLetterPopup {
 
     TextViewBuilder textViewBuilder;
-    @AnimatorRes
-    private int popInAnim;
+//    @AnimatorRes
+//    private int popInAnim;
+//
+//    @AnimatorRes
+//    private int popOutAnim;
 
-    @AnimatorRes
-    private int popOutAnim;
-
-    private View rootView;
+//    private View rootView;
 
     private PopupBehavior popupBehavior;
 
@@ -29,32 +26,23 @@ public class SingleLetterPopup {
         return this;
     }
 
-    public int getPopInAnim() {
-        return popInAnim;
-    }
-
-    public SingleLetterPopup setPopInAnim(int popInAnim) {
-        this.popInAnim = popInAnim;
-        return this;
-    }
-
-    public int getPopOutAnim() {
-        return popOutAnim;
-    }
-
-    public SingleLetterPopup setPopOutAnim(int popOutAnim) {
-        this.popOutAnim = popOutAnim;
-        return this;
-    }
-
-    public View getRootView() {
-        return rootView;
-    }
-
-    public SingleLetterPopup setRootView(View rootView) {
-        this.rootView = rootView;
-        return this;
-    }
+//    public int getPopInAnim() {
+//        return popInAnim;
+//    }
+//
+//    public SingleLetterPopup setPopInAnim(int popInAnim) {
+//        this.popInAnim = popInAnim;
+//        return this;
+//    }
+//
+//    public int getPopOutAnim() {
+//        return popOutAnim;
+//    }
+//
+//    public SingleLetterPopup setPopOutAnim(int popOutAnim) {
+//        this.popOutAnim = popOutAnim;
+//        return this;
+//    }
 
     public PopupBehavior getPopupBehavior() {
         return popupBehavior;

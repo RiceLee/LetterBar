@@ -36,6 +36,26 @@ public class RecyclerBean implements CharLetter, Comparable<RecyclerBean> {
 
     @Override
     public int compareTo(RecyclerBean o) {
-        return Pinyin.toPinyin(memberInfo.name, "").compareTo(Pinyin.toPinyin(o.memberInfo.name, ""));
+        String currentPinyin = Pinyin.toPinyin(memberInfo.name, "");
+        String otherPinyin = Pinyin.toPinyin(o.memberInfo.name, "");
+        if ((currentPinyin.charAt(0) == '#' || currentPinyin.charAt(0) == '$') &&
+                (otherPinyin.charAt(0) != '#' && otherPinyin.charAt(0) != '$')) {
+            return 1;
+        } else if ((currentPinyin.charAt(0) != '#' && currentPinyin.charAt(0) != '$') &&
+                (otherPinyin.charAt(0) == '#' || otherPinyin.charAt(0) == '$')) {
+            return -1;
+        } else if ((currentPinyin.charAt(0) == '#' || currentPinyin.charAt(0) == '$') &&
+                (otherPinyin.charAt(0) == '#' || otherPinyin.charAt(0) == '$')) {
+            return currentPinyin.compareTo(otherPinyin);
+        }
+        return currentPinyin.compareTo(otherPinyin);
+    }
+
+    @Override
+    public String toString() {
+        return "RecyclerBean{" +
+                "memberInfo=" + memberInfo +
+                ", firstName=" + firstName +
+                '}';
     }
 }

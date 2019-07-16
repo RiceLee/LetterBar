@@ -38,4 +38,13 @@ public class MemberInfo {
     public void setBoy(boolean boy) {
         this.boy = boy;
     }
+
+    @Override
+    public String toString() {
+        return "MemberInfo{" +
+                "name='" + name + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", boy=" + boy +
+                '}';
+    }
 }

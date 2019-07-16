@@ -1,11 +1,8 @@
 package demo.ricelee.letterbar;
 
 import android.graphics.Color;
-import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.PathShape;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -44,23 +42,6 @@ public class AllLetter2Activity extends AppCompatActivity {
                 .setSolidColor(Color.YELLOW).buildDrawable();
     }
 
-    private Drawable buildWeChatDrawable() {
-        ShapeDrawable shapeDrawable = new ShapeDrawable();
-        Path path = new Path();
-        path.setFillType(Path.FillType.WINDING);
-//        path.addCircle(20f, 20f, 20f, Path.Direction.CCW);
-        path.addArc(0f, 0f, 20f, 40f, -90f, 180f);
-//        path.moveTo(20f, 0f);
-//        path.quadTo(35f, 10f, 50f, 20f);
-        path.close();
-//        path.addRect(new RectF(20f, 0f, 50f, 20f), Path.Direction.CCW);
-        //        path.addArc(new RectF(20f, 0f, 50f, 20f), 120f, 90f);
-        PathShape pathShape = new PathShape(path, 50f, 40f);
-        shapeDrawable.setShape(pathShape);
-//        shapeDrawable.setPadding(dp_10, dp_10, dp_10, dp_10);
-        return shapeDrawable;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,16 +49,17 @@ public class AllLetter2Activity extends AppCompatActivity {
         letterBar = findViewById(R.id.letterBar);
         letterBar.setLetterTouchListener(new SingleLetterPopup().setDuration(2000)
                 .setTextViewBuilder(new TextViewBuilder()
-                        .setBackgroundDrawable(buildWeChatDrawable())
+                        .setBackgroundDrawable(buildDrawable())
                         .setPadding(dp_10, dp_10, dp_10, dp_10)
                         .setTextSize(20f).setTextColor(Color.RED))
                 .setPopupBehavior(PopupBehavior.createCenterBehavior())
                 .createPopup());
-        letterBar.addFirstDrawable(R.drawable.icon_search).refresh();
+        letterBar.addFirstDrawable(R.drawable.icon_search).addLastChar('#').refresh();
         recyclerView = findViewById(R.id.recyclerView);
 
         recyclerBeans = initData();
         Collections.sort(recyclerBeans);
+        Log.e("ALL", "list:" + recyclerBeans);
         myAdapter = new MyAdapter(recyclerBeans);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, RecyclerView.VERTICAL));
@@ -134,6 +116,16 @@ public class AllLetter2Activity extends AppCompatActivity {
             RecyclerBean recyclerBean = new RecyclerBean(memberInfo);
             recyclerBeanList.add(recyclerBean);
         }
+        for (int i = 0; i < 20; i++) {
+            String name = NameUtils.getName(NameUtils.otherSurnames);
+            recyclerBeanList.add(transferData(name));
+        }
         return recyclerBeanList;
+    }
+
+    private RecyclerBean transferData(String name) {
+        String[] split = name.split("-");
+        MemberInfo memberInfo = new MemberInfo(split[1], TextUtils.equals("男", split[0]));
+        return new RecyclerBean(memberInfo);
     }
 }
