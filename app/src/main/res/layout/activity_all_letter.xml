@@ -103,7 +103,8 @@
         android:onClick="clickEvent"
         android:text="添加String"
         android:textAllCaps="false"
-        app:layout_constraintTop_toBottomOf="@id/btn_add_first" />
+        app:layout_constraintTop_toBottomOf="@id/btn_add_first"
+        tools:ignore="MissingConstraints" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_add_char"
@@ -113,7 +114,8 @@
         android:onClick="clickEvent"
         android:text="添加Char"
         android:textAllCaps="false"
-        app:layout_constraintTop_toBottomOf="@id/btn_add_string" />
+        app:layout_constraintTop_toBottomOf="@id/btn_add_string"
+        tools:ignore="MissingConstraints" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_center"

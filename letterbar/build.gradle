@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 28
@@ -7,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -26,6 +27,15 @@ android {
     }
 
 }
+publish {
+    userOrg = 'ricelee' //bintray账户下某个组织id
+    groupId = 'ricelee.ui.letterbar' //maven仓库下库的包名，一般为模块包名
+    artifactId = 'LetterBar' //项目名称
+    publishVersion = '1.0.1' //版本号
+    desc = 'android 字母导航' //项目介绍，可以不写
+    website = '' //项目主页，可以不写
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

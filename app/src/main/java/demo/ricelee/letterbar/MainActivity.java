@@ -33,23 +33,5 @@ public class MainActivity extends AppCompatActivity {
         stringBuilder.append((String.format("[%s,%s]", b, (int) b))).append("\t");
 
         Log.e(getClass().getSimpleName(), stringBuilder.toString());
-
-//        Rect mRect = new Rect();
-//
-//        Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        mPaint.setDither(false);
-////        mPaint.setStrokeWidth(5);
-//        mPaint.setTextSize(NameUtils.sp2px(20));
-//
-//        mPaint.setTextAlign(Paint.Align.CENTER);
-//        int width = 0, height = 0;
-//        for (char ch = 'A'; ch <= 'Z'; ch++) {
-//            mPaint.getTextBounds(String.valueOf(ch), 0, 1, mRect);
-//            width = Math.max(mRect.width(), width);
-//            height = Math.max(mRect.height(), height);
-//            Log.e(getClass().getSimpleName(), ch + "\trect:" + mRect.toString()
-//                    + "\twidth:" + mRect.width() + "\theight:" + mRect.height());
-//        }
-//        Log.e(getClass().getSimpleName(), "\twidth:" + width + "\theight:" + height);
     }
 }

@@ -536,8 +536,7 @@ public class LetterBar extends View {
     }
 
     public int getTouchIndexCenterY() {
-        return mTouchIndex == 0 ? mLetterVerticalPadding + itemHeight / 2
-                : mLetterVerticalPadding + mTouchIndex * (itemHeight + mLetterVerticalPadding) + itemHeight / 2;
+        return mTouchIndex == 0 ? itemHeight / 2 : mTouchIndex * itemHeight + itemHeight / 2;
     }
 
     private void check(float y) {
